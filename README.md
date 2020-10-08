@@ -1,67 +1,71 @@
-## 3 分钟了解存量SpringBoot应用迁移到云开发平台
+## 实验报告
 
-### 1、您能看到这篇文章，说明已经创建的一个应用，并且已经打开了CloudIDE。是的，第一步，就是需要创建一个云应用，然后打开CloudIDE；
+### 程序实现部分
+本次实验使用了`python`实现了一个简单的`RESTful API`程序  
+程序基于`flask`框架实现，实现了增删改查四个接口
+1. 增加学生接口  
+    - path: /api/v1/student
+    - method: POST
+    - body:
+    ```json
+    {
+      "studentId":  1,
+      "name": "Mike",
+      "department": "Software School",
+      "major": "Software Engineering"
+    }
+    ```
+    - response:  
+    - Success
+    - Invalid Param
+    - Student Exist
 
-### 2、把存量的SpringBoot应用迁移到云开发目录下： 拖动工程根目录下的src、pom.xml 到CloudIDE工程目录下，就能完成迁移。
+2. 查询学生接口
+    - path: /api/v1/student
+    - method: GET
+    - response: 
+    ```json
+    [
+        {
+          "studentId":  1,
+          "name": "Mike",
+          "department": "Software School",
+          "major": "Software Engineering"
+        },
+        {...}
+    ]
+    ```
 
-### 3、修改pom.xml, 以满足云开发平台构建镜像的规范（必须按这个约定）:
-```
-   <properties>
-        <applicationName>${project.artifactId}</applicationName>
-        <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
-   </properties>
-   ...
-   <build>
-      <finalName>${applicationName}</finalName>
-      <plugins>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>${spring-boot.version}</version>
-            <configuration>
-                <!--需要替换您的springboot启动类-->
-                <mainClass>com.alibaba.sca.temp.web.Application</mainClass>
-                <layout>ZIP</layout>
-            </configuration>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>repackage</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-      </plugins>
-      ...
-    </build>
-```
-   最好再加上java编译版本，1.8：（可选）
-```
-   <build>
-      <plugins>
-           <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            ...
-        </plugins>
-    </build>
-```
+3. 更新学生接口  
+    - path: /api/v1/student
+    - method: PUT
+    - body:
+    ```json
+    {
+      "studentId":  1,
+      "name": "Mike",
+      "department": "Software School",
+      "major": "Software Engineering"
+    }
+    ```
+    - response:  
+    - Success
+    - Invalid Param
+    - Student Not Exist
+ 
+4. 删除学生接口  
+    - path: /api/v1/student
+    - method: DELETE
+    - body:
+    ```json
+    {"studentId":  1}
+    ```
+    - response:  
+        - Success
+        - Invalid Param
+        - Student Not Exist
 
-### 4、到这里已经迁移完毕。需要验证一下是否迁移成功。
-    1、CloudIDE-Native启动：在cloudide的右下角Termial中的命令行中，输入启动命名：mvn spring-boot:run ,验证是否能在IDE容器中启动成功，启动成功后在IDE左下角有一个“预览”功能，可以把云端IDE启动的服务在本地浏览器中访问到，则说明Cloud-Native配置是OK的。
-    2、提交代码到CodeUp上；
-    3、开始部署到线上环境。在IDE左边工具栏中打开云开发插件，然后点击部署按钮，开始部署到云端。如果部署成功，则会在输出日志中，打印一个临时域名，可以直接访问。 
-    到这一步，存量web应用就算迁移完了。
-
-### 5、Dockerfile 和 prepare.sh 这两个文件不要去修改
-
-
-   
-    
+## 服务部署部分
+因为改用了`python`技术栈，所以改写了阿里云效平台提供的`Dockerfile`和`prepare.sh`文件，
+使用了`python:3.6`镜像为基础创建镜像，并且对启动文件做了调整
+ 
