@@ -2,7 +2,7 @@
 echo "#!/bin/bash" > start.sh
 
 if [ ! -n "$1" ]; then
-  APP_NAME="demo"
+  APP_NAME="main"
 else
   APP_NAME=$1
 fi
@@ -16,4 +16,4 @@ do
   fi
 done
 
-echo "java -Dserver.port=8080 -jar ${APP_NAME}.jar" >> start.sh
+echo "flask run" >> start.sh

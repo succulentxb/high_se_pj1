@@ -1,13 +1,15 @@
-FROM registry.cn-hangzhou.aliyuncs.com/devcloud_base_image/openjdk:8
+FROM python:3.6
+WORKDIR /Project/pj1
 
-ARG APP_NAME
+ARG APP_NAME=main
 ENV APP_NAME=${APP_NAME}
 
-COPY ./target/${APP_NAME}.jar /home/admin/${APP_NAME}.jar
-COPY ./start.sh /home/admin/start.sh
+COPY requirements.txt ./
+RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+COPY ./${APP_NAME}.py ./${APP_NAME}.py
+COPY ./start.sh ./start.sh
 
-RUN chmod +x /home/admin/*.sh
+RUN chmod +x ./*.sh
 
-WORKDIR /home/admin
-
-ENTRYPOINT ["/home/admin/start.sh"]
+ENV FLASK_APP=${APP_NAME}.py
+ENTRYPOINT ["/Project/pj1/start.sh"]
